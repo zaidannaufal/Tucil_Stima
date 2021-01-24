@@ -1,19 +1,13 @@
 from itertools import permutations  
+import timeit
 
 def listtostring(l):
     string = ''
     for x in l:
-        string = string + x + ','
-    return string[:-1]
-
-def flush(s):
-    s = s.replace(',','').replace('+','')
-    return ''.join(set(s))
+        string = string + x
+    return string
 
 def makedict(s):
-    if (len(s) > 10):
-        print("Maksimum 10 Huruf Berbeda")
-    else:
         d = {}
         for i in range(len(s)):   
             d[s[i]] = '0'
@@ -31,62 +25,62 @@ def changestringvalue(s,dict):
         s = s.replace(word, initial)
     return s
 
-def checktotal(l):
-    total = 0
-    for i in l[:-1]:
-        # x = i.replace('+','')
-        total = total + int(i)
-    # print('-------')
-    # print (l)
-    # print (total)
-    # print (int(l[-1]))
-    # print('-------')
-    return total == int(l[-1])
-
 def check(l):
-    check1 = True
     for i in l:
         if i[0] == '0':
-            check1 = False
-            break
-    return check1 and checktotal(l)
+            return False
+    total = 0
+    for i in l[:-1]:
+        total = total + int(i)
+    return total == int(l[-1])
 
 def solution(dict,listsum):
     p = permutations(range(10),len(dict))
-    percobaan = 0
-    listsum[-2] = listsum[-2].replace('+','')
+    tries = 1
     for i in list(p):
         listsum_new = []
         dict = changedictvalue(dict,list(i))
         for j in range(len(listsum)):
             listsum_new.append(changestringvalue(listsum[j],dict))
-        # print(listsum)
         if check(listsum_new):
+            listsum_new.append(str(tries))
             return listsum_new
         else :
-            percobaan += 1
+            tries +=1
     else:
-        print ('ga nemu')
+        print('tidak ditemukan solusi')
+        return []
 
-    
-f = open("tekateki.txt", "r")
-listsum = f.read()
-print(listsum)
-print('solusi:')
-listsum = listsum.split('\n')
-listsum.pop(-2)
-word = listtostring(listsum)
-word = flush(word)
-worddict = makedict(word)
-listsolution = solution(worddict,listsum)
-listsolution[-2] = listsolution[-2] + '+'
-for i in listsolution[:-1]:
-    print(i)
-print('------')
-print(listsolution[-1])
+def crypt(tekateki):
+    print("Soal :")
+    print(tekateki)
+    print('\nSolusi :')
+    tekateki = tekateki.replace(" ","").replace('+','').split('\n')
+    tekateki.pop(-2)
+    word = ''.join(set(listtostring(tekateki)))
+    if len(word) <=10:
+        worddict = makedict(word)
+        start=timeit.default_timer()
+        listsolution = solution(worddict,tekateki)
+        stop=timeit.default_timer()
+        if listsolution: 
+            tries = listsolution[-1]
+            listsolution = listsolution[:-1]
+            whitespace = ' '
+            for i in listsolution[:-2]:
+                wlenght = len(listsolution[-1]) - len(i)
+                print(whitespace*wlenght+i)
+            print(whitespace *(len(listsolution[-1]) - len(listsolution[-2])) + listsolution[-2] + '+')
+            print('------')
+            print(listsolution[-1])
+            print(f"\nTotal percobaan: {tries}")
+            print("Waktu diperlukan: " + "{:.2f}".format(stop-start) +" seconds\n")
+    else:
+        print('Tidak terdapat solusi dikarenakan jumlah huruf berbeda lebih dari 10')
 
-
-
-
-# x = x.split(',')
-# print(x)
+if __name__ == "__main__":
+    f = open("tekateki.txt", "r")
+    tekateki = f.read()
+    tekateki = tekateki.split('\n\n')
+    for i in range(len(tekateki)):
+        crypt(tekateki[i])
