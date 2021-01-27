@@ -34,3 +34,11 @@ OASIS
   SHE+
 ------
 COMES
+
+ THREE
+ THREE
+   TWO
+   TWO
+   ONE+
+------
+ELEVEN

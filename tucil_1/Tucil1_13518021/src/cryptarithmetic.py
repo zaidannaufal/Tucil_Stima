@@ -1,5 +1,34 @@
-from itertools import permutations  
 import timeit
+
+def listtoint(l):
+    i = len(l)-1
+    integer = 0
+    for x in l:
+        integer = integer + x * 10**i
+        i-=1
+    return integer
+
+def permutations(s,len):
+    for  i in range(len-2,-1,-1):
+        if ( s[i] < s[i+1] ):
+            break;
+    if ( i < 0 ):
+        return 0
+    for j in range(len-1,i-1,-1):
+        if ( s[j] > s[i] ):
+            temp = s[i]
+            s[i] = s[j]
+            s[j] = temp
+            break
+    i= i + 1
+    k = len-1
+    while(k>i):
+        temp = s[i]
+        s[i] = s[k]
+        s[k] = temp
+        i+=1
+        k-=1
+    return s;
 
 def listtostring(l):
     string = ''
@@ -35,11 +64,11 @@ def check(l):
     return total == int(l[-1])
 
 def solution(dict,listsum):
-    p = permutations(range(10),len(dict))
+    p = [0,1,2,3,4,5,6,7,8,9]
     tries = 1
-    for i in list(p):
+    while int(listtoint(p)) != 9876543210:
         listsum_new = []
-        dict = changedictvalue(dict,list(i))
+        dict = changedictvalue(dict,p[10-len(dict):])
         for j in range(len(listsum)):
             listsum_new.append(changestringvalue(listsum[j],dict))
         if check(listsum_new):
@@ -47,6 +76,7 @@ def solution(dict,listsum):
             return listsum_new
         else :
             tries +=1
+        p = permutations(p,10)
     else:
         print('tidak ditemukan solusi')
         return []
@@ -60,9 +90,7 @@ def crypt(tekateki):
     word = ''.join(set(listtostring(tekateki)))
     if len(word) <=10:
         worddict = makedict(word)
-        start=timeit.default_timer()
         listsolution = solution(worddict,tekateki)
-        stop=timeit.default_timer()
         if listsolution: 
             tries = listsolution[-1]
             listsolution = listsolution[:-1]
@@ -74,13 +102,17 @@ def crypt(tekateki):
             print('------')
             print(listsolution[-1])
             print(f"\nTotal percobaan: {tries}")
-            print("Waktu diperlukan: " + "{:.2f}".format(stop-start) +" seconds\n")
+            
     else:
         print('Tidak terdapat solusi dikarenakan jumlah huruf berbeda lebih dari 10')
 
 if __name__ == "__main__":
-    f = open("tekateki.txt", "r")
+    namafile = "tekateki.txt"
+    f = open(f"./test/{namafile}", "r")
     tekateki = f.read()
     tekateki = tekateki.split('\n\n')
     for i in range(len(tekateki)):
+        start=timeit.default_timer()
         crypt(tekateki[i])
+        stop=timeit.default_timer()
+        print("Waktu diperlukan: " + "{:.2f}".format(stop-start) +" seconds\n")
