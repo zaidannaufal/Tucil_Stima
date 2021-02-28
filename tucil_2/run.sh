@@ -1,0 +1,1 @@
+python3 ./src/topological_sort.py $1

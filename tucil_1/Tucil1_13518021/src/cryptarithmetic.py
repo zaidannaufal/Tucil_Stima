@@ -107,7 +107,7 @@ def crypt(tekateki):
         print('Tidak terdapat solusi dikarenakan jumlah huruf berbeda lebih dari 10')
 
 if __name__ == "__main__":
-    namafile = "tekateki.txt"
+    namafile = "tekatekidigabung.txt"
     f = open(f"./test/{namafile}", "r")
     tekateki = f.read()
     tekateki = tekateki.split('\n\n')
